@@ -52,7 +52,13 @@ const resolver: Resolver<FormValues> = async (values) => {
   };
 };
 
-export default function MemberForm({ onSubmit }: { onSubmit: any }) {
+export default function MemberForm({
+  onSubmit,
+  loading,
+}: {
+  onSubmit: any;
+  loading: boolean;
+}) {
   const {
     handleSubmit,
     register,
@@ -85,7 +91,7 @@ export default function MemberForm({ onSubmit }: { onSubmit: any }) {
         type="number"
         placeholder="Enter member phone # (optional)"
       />
-      <Button>Add Member</Button>
+      <Button disabled={loading}>Add Member</Button>
       <Alert className="block" variant="destructive">
         <p>{errors?.name && errors.name.message}</p>
         <p>{errors?.email && errors.email.message}</p>

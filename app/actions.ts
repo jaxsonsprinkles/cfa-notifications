@@ -2,6 +2,12 @@
 
 import { createClient } from "@/utils/supabase/server";
 
+export async function getMembers() {
+  const supabase = await createClient();
+  const { data } = await supabase.from("members").select("*");
+  return data || [];
+}
+
 export async function addMember(result: any) {
   const supabase = await createClient();
 

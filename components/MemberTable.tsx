@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -6,11 +8,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { createClient } from "@/utils/supabase/server";
+import { getMembers } from "@/app/actions";
+import { useEffect, useState } from "react";
+import { useMembers } from "@/context/MembersContext";
 
-export default async function MemberTable() {
-  const supabase = await createClient();
-  const { data: members } = await supabase.from("members").select();
+export default function MemberTable() {
+  const [members, setMembers] = useState<any[]>([]);
+  const { refreshTrigger } = useMembers();
+
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await getMembers();
+      setMembers(data);
+    };
+
+    loadData();
+  }, [refreshTrigger]);
 
   return (
     <Table>
