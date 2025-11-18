@@ -1,15 +1,15 @@
+import MemberFormContainer from "@/components/MemberFormContainer";
+import MemberTable from "@/components/MemberTable";
 import Navbar from "@/components/Navbar";
-import { createClient } from "@/utils/supabase/server";
 
-export default async function Instruments() {
-  const supabase = await createClient();
-  const { data: members } = await supabase.from("members").select();
+export default async function Dashboard() {
   return (
     <div>
       <Navbar />
-      {members?.map((member) => {
-        return <div key={member.id}>{member.name}</div>;
-      })}
+      <div className="w-5/6 lg:w-3/4 mx-auto mt-10">
+        <MemberFormContainer />
+        <MemberTable />
+      </div>
     </div>
   );
 }
