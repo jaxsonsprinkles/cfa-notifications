@@ -40,7 +40,7 @@ export default function Dashboard() {
 	const sendReminders = async () => {
 		setLoading(true);
 		const results = await sendEmails();
-		console.log(results);
+
 		setLoading(false);
 	};
 
@@ -96,7 +96,9 @@ export default function Dashboard() {
 											{new Date(event.time).toLocaleTimeString()}
 										</p>
 										<p>{event.located_at}</p>
-										<Button onClick={sendReminders}>Send Emails</Button>
+										<Button disabled={loading} onClick={sendReminders}>
+											Send Emails
+										</Button>
 									</div>
 								);
 							})

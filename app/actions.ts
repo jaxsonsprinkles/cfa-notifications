@@ -135,8 +135,8 @@ export async function sendEmails() {
 	for (const { event, reminder } of reminders) {
 		for (const member of members) {
 			const { data, error } = await resend.emails.send({
-				from: 'Chick-Fil-A Leadership Club <onboarding@resend.dev>',
-				to: [member.email],
+				from: 'onboarding@resend.dev',
+				to: 'jaxstar24@gmail.com', //change to member.email
 				subject: `${event.title} is ${reminder} away`,
 				react: EmailTemplate({
 					firstName: 'John',
@@ -144,8 +144,6 @@ export async function sendEmails() {
 					reminder: reminder,
 				}),
 			});
-			console.log(data);
-			console.log(error);
 
 			try {
 				result.push({ member: member.id, event: event.title, status: 'sent' });

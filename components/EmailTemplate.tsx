@@ -11,11 +11,23 @@ export default function EmailTemplate({
 }) {
 	return (
 		<div className='p-3'>
-			<div className='bg-[#cf2434] w-full h-70 rounded-md'>
+			<div
+				style={{
+					backgroundColor: '#cf2434',
+					borderRadius: '0.375rem',
+					width: '100%',
+				}}
+			>
 				<img
 					src='https://ci3.googleusercontent.com/meips/ADKq_NZoBw5wDj3jlWCNRWMeYhrxIA6n1wjVhew8oBw7-lzYYqNuTqLbJWdehSxTFueB_J1hUV7ycyVjW2L0Koy0pXJU3nihb9wnBb--siPgPf81RDjEcYnfIxy5YIL3uoAYchbacWXFdIQLyGFgCtrV09MHgK83lcPNhVUHkOaY2rQAmUX_2z_Z3Nii9mhHPt2oUsEXasAsI13A=s0-d-e1-ft#https://app.chickfilaleaderacademy.com/assets/new-logo-white-8b3cdfd9ed5fa3e0fa5f861396e6833aca019242bb7e8a899225ed995ab5f478.png'
 					alt='Chick-Fil-A Leadership Academy'
-					className='mx-auto'
+					style={{
+						display: 'block',
+						marginLeft: 'auto',
+						marginRight: 'auto',
+						paddingTop: '0.5rem',
+						paddingBottom: '0.5rem',
+					}}
 				/>
 			</div>
 			<div>
