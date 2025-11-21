@@ -3,6 +3,11 @@ import { createClient } from "@/utils/supabase/server";
 import { Resend } from "resend";
 
 export async function GET(request: Request) {
+  const authHeader = request.headers.get("authorization");
+  if (authHeader != `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   const resend = new Resend(process.env.RESEND_API_KEY);
   const supabase = await createClient();
   const { data: members } = await supabase.from("members").select("*");
@@ -49,13 +54,7 @@ export async function GET(request: Request) {
     ];
     for (const reminder of reminderTimes) {
       const timeDifference = reminder.time.getTime() - rightNow.getTime();
-      console.log(
-        `Reminder Time: ${reminder.time.toLocaleTimeString(
-          "en-US"
-        )}\nRight Now: ${rightNow.toLocaleTimeString(
-          "en-US"
-        )}\nDifference: ${timeDifference}`
-      );
+
       if (timeDifference >= 0 && timeDifference <= 3600000) {
         reminders.push({ event, reminder: reminder.label });
       }
@@ -64,19 +63,22 @@ export async function GET(request: Request) {
 
   for (const { event, reminder } of reminders) {
     for (const member of members) {
-      const { data, error } = await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: member.email, //change to member.email
-        subject: `${event.title} is ${reminder} away`,
-        react: EmailTemplate({
-          firstName: "John",
-          event: event,
-          reminder: reminder,
-        }),
-      });
-
       try {
-        result.push({ member: member.id, event: event.title, status: "sent" });
+        const { data, error } = await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: member.email, //change to member.email
+          subject: `${event.title} is ${reminder} away`,
+          react: EmailTemplate({
+            firstName: member.name.split(" ")[0],
+            event: event,
+            reminder: reminder,
+          }),
+        });
+        result.push({
+          member: member.email,
+          event: event.title,
+          status: "sent",
+        });
       } catch (error) {
         console.error(error);
         result.push({
@@ -87,5 +89,9 @@ export async function GET(request: Request) {
       }
     }
   }
-  return result;
+  return Response.json({
+    success: true,
+    sent: result.length,
+    results: result,
+  });
 }
