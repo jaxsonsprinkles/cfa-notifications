@@ -1,161 +1,73 @@
-'use server';
+"use server";
 
-import EmailTemplate from '@/components/EmailTemplate';
-import { createClient } from '@/utils/supabase/server';
-import { Resend } from 'resend';
+import EmailTemplate from "@/components/EmailTemplate";
+import { createClient } from "@/utils/supabase/server";
+import { Resend } from "resend";
 
 export async function getMembers() {
-	const supabase = await createClient();
-	const { data } = await supabase.from('members').select('*');
-	return data || [];
+  const supabase = await createClient();
+  const { data } = await supabase.from("members").select("*");
+  return data || [];
 }
 
 export async function addMember(data: any) {
-	const supabase = await createClient();
-	const { data: result, error } = await supabase
-		.from('members')
-		.insert([
-			{
-				name: data.name,
-				email: data.email,
-				phone: data.phone,
-			},
-		])
-		.select();
+  const supabase = await createClient();
+  const { data: result, error } = await supabase
+    .from("members")
+    .insert([
+      {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+      },
+    ])
+    .select();
 
-	if (error) {
-		throw new Error(error.message);
-	}
+  if (error) {
+    throw new Error(error.message);
+  }
 
-	return result;
+  return result;
 }
 
 export async function removeMember(id: bigint) {
-	const supabase = await createClient();
+  const supabase = await createClient();
 
-	const { error } = await supabase.from('members').delete().eq('id', id);
-	if (error) {
-		throw new Error(error.message);
-	}
+  const { error } = await supabase.from("members").delete().eq("id", id);
+  if (error) {
+    throw new Error(error.message);
+  }
 }
 
 export async function getEvents() {
-	const supabase = await createClient();
-	const { data } = await supabase
-		.from('events')
-		.select('*')
-		.order('created_at', { ascending: false });
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("events")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-	return data || [];
+  return data || [];
 }
 
 export async function addEvent(result: any) {
-	const supabase = await createClient();
+  const supabase = await createClient();
 
-	const { error } = await supabase.from('events').insert([
-		{
-			title: result.title,
-			description: result.description,
-			date: result.date,
-			time: result.time,
-			located_at: result.located_at,
-		},
-	]);
+  const { error } = await supabase.from("events").insert([
+    {
+      title: result.title,
+      description: result.description,
+      date: result.date,
+      time: result.time,
+      located_at: result.located_at,
+    },
+  ]);
 
-	if (error) throw new Error(error.message);
-	return result;
+  if (error) throw new Error(error.message);
+  return result;
 }
 
 export async function removeEvent(id: string) {
-	const supabase = await createClient();
-	const { error } = await supabase.from('events').delete().eq('id', id);
-	if (error) throw new Error(error.message);
-}
-
-export async function sendEmails() {
-	const resend = new Resend(process.env.RESEND_API_KEY);
-	const supabase = await createClient();
-	const { data: members } = await supabase.from('members').select('*');
-	const { data: events } = await supabase.from('events').select('*');
-	const reminders = [];
-	const result = [];
-	if (!events || !members) {
-		return { error: 'No data', status: 404 };
-	}
-	const rightNow = new Date();
-
-	for (const event of events) {
-		const eventDate = new Date(event.date);
-		const eventTime = new Date(event.time);
-		const eventDateTime = new Date(
-			eventDate.getFullYear(),
-			eventDate.getMonth(),
-			eventDate.getDate(),
-			eventTime.getHours(),
-			eventTime.getMinutes()
-		);
-
-		const reminderTimes = [
-			{
-				time: new Date(eventDateTime.getTime() - 604800000),
-				label: '1 week',
-			},
-			{
-				time: new Date(eventDateTime.getTime() - 259200000),
-				label: '3 days',
-			},
-			{
-				time: new Date(eventDateTime.getTime() - 86400000),
-				label: '1 day',
-			},
-			{
-				time: (() => {
-					const d = new Date(eventDateTime);
-					d.setHours(7, 0, 0);
-					return d;
-				})(),
-				label: 'today',
-			},
-		];
-		for (const reminder of reminderTimes) {
-			const timeDifference = reminder.time.getTime() - rightNow.getTime();
-			console.log(
-				`Reminder Time: ${reminder.time.toLocaleTimeString(
-					'en-US'
-				)}\nRight Now: ${rightNow.toLocaleTimeString(
-					'en-US'
-				)}\nDifference: ${timeDifference}`
-			);
-			if (timeDifference >= 0 && timeDifference <= 3600000) {
-				reminders.push({ event, reminder: reminder.label });
-			}
-		}
-	}
-
-	for (const { event, reminder } of reminders) {
-		for (const member of members) {
-			const { data, error } = await resend.emails.send({
-				from: 'onboarding@resend.dev',
-				to: 'jaxstar24@gmail.com', //change to member.email
-				subject: `${event.title} is ${reminder} away`,
-				react: EmailTemplate({
-					firstName: 'John',
-					event: event,
-					reminder: reminder,
-				}),
-			});
-
-			try {
-				result.push({ member: member.id, event: event.title, status: 'sent' });
-			} catch (error) {
-				console.error(error);
-				result.push({
-					status: 'failed',
-					member: member.id,
-					event: event.title,
-				});
-			}
-		}
-	}
-	return result;
+  const supabase = await createClient();
+  const { error } = await supabase.from("events").delete().eq("id", id);
+  if (error) throw new Error(error.message);
 }
