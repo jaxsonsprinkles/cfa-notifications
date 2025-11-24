@@ -1,12 +1,9 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "crons": [
-    {
-      "path": "/api/cron-reminders",
-      "schedule": "0 */6 * * *",
-      "headers": {
-        "Authorization": "Bearer ${CRON_SECRET}"
-      }
-    }
-  ]
+	"$schema": "https://openapi.vercel.sh/vercel.json",
+	"crons": [
+		{
+			"path": "/api/cron-reminders",
+			"schedule": "0 */6 * * *"
+		}
+	]
 }
