@@ -50,7 +50,7 @@ export async function GET(request: Request) {
 		for (const reminder of reminderTimes) {
 			const timeDifference = reminder.time.getTime() - rightNow.getTime();
 
-			if (timeDifference >= 0 && timeDifference <= 3600000) {
+			if (timeDifference >= 0 && timeDifference <= 86400000) {
 				reminders.push({ event, reminder: reminder.label });
 			}
 		}
