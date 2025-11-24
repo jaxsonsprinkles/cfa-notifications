@@ -10,7 +10,7 @@ export async function GET(request: Request) {
 	const reminders = [];
 	const result = [];
 	if (!events || !members) {
-		return { error: 'No data', status: 404 };
+		return Response.json({ error: 'No data' }, { status: 404 });
 	}
 	const rightNow = new Date();
 
