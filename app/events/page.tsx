@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
@@ -25,8 +25,16 @@ export default function Events() {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: async (values) => {
+      const errs: Record<string, any> = {};
+      if (!values.title) errs.title = { type: "required", message: "Event name is required." };
+      if (!values.located_at) errs.located_at = { type: "required", message: "Location is required." };
+      return { values: Object.keys(errs).length === 0 ? values : {}, errors: errs };
+    },
+  });
   const [loading, setLoading] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [events, setEvents] = useState<any[]>([]);
@@ -38,6 +46,8 @@ export default function Events() {
     d.setSeconds(parseInt(data.time.split(":")[2]));
     try {
       await addEvent({ ...data, time: d, date: date });
+      reset();
+      setDate(new Date());
     } catch (error) {
       console.error(error);
     } finally {
@@ -126,7 +136,11 @@ export default function Events() {
             Object.keys(errors).length != 0 ? "flex flex-col" : "hidden"
           }`}
           variant="destructive"
-        ></Alert>
+        >
+          <AlertDescription>
+            {Object.values(errors).map((e: any) => e.message).join(' · ')}
+          </AlertDescription>
+        </Alert>
       </form>
       <div>
         {events.map((event, i) => {

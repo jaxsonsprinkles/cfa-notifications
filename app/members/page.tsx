@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { useForm, Resolver } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
-import { Alert } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { addMember, getMembers, removeMember } from '../actions';
 import {
 	Table,
@@ -22,6 +22,7 @@ export default function Members() {
 	const {
 		handleSubmit,
 		register,
+		reset,
 		formState: { errors },
 	} = useForm({ resolver });
 	const [members, setMembers] = useState<any[]>([]);
@@ -29,9 +30,14 @@ export default function Members() {
 
 	const onSubmit = async (data: any) => {
 		setLoading(true);
-		await addMember(data);
-
-		setLoading(false);
+		try {
+			await addMember(data);
+			reset();
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setLoading(false);
+		}
 	};
 	useEffect(() => {
 		const a = async () => {
@@ -109,7 +115,11 @@ export default function Members() {
 						Object.keys(errors).length != 0 ? 'flex flex-col' : 'hidden'
 					}`}
 					variant='destructive'
-				></Alert>
+				>
+					<AlertDescription>
+						{Object.values(errors).map((e: any) => e.message).join(' · ')}
+					</AlertDescription>
+				</Alert>
 			</form>
 			{
 				<Table>

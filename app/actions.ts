@@ -1,6 +1,6 @@
 "use server";
 
-import EmailTemplate from "@/components/EmailTemplate";
+import { NewEventEmailTemplate } from "@/components/EmailTemplate";
 import { createClient } from "@/utils/supabase/server";
 import { Resend } from "resend";
 
@@ -52,18 +52,43 @@ export async function getEvents() {
 export async function addEvent(result: any) {
   const supabase = await createClient();
 
-  const { error } = await supabase.from("events").insert([
-    {
-      title: result.title,
-      description: result.description,
-      date: result.date,
-      time: result.time,
-      located_at: result.located_at,
-    },
-  ]);
+  const { data: inserted, error } = await supabase
+    .from("events")
+    .insert([
+      {
+        title: result.title,
+        description: result.description,
+        date: result.date,
+        time: result.time,
+        located_at: result.located_at,
+      },
+    ])
+    .select()
+    .single();
 
   if (error) throw new Error(error.message);
-  return result;
+
+  // Send announcement emails to all members
+  const { data: members } = await supabase.from("members").select("*");
+  if (members && members.length > 0) {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const event = inserted ?? result;
+    await Promise.allSettled(
+      members.map((member: any) =>
+        resend.emails.send({
+          from: process.env.EMAIL_FROM ?? "onboarding@resend.dev",
+          to: member.email,
+          subject: `New event: ${event.title}`,
+          react: NewEventEmailTemplate({
+            firstName: member.name?.split(" ")[0] ?? member.name,
+            event,
+          }),
+        })
+      )
+    );
+  }
+
+  return inserted ?? result;
 }
 
 export async function removeEvent(id: string) {

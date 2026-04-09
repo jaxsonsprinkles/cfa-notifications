@@ -1,4 +1,4 @@
-import EmailTemplate from "@/components/EmailTemplate";
+import { ReminderEmailTemplate } from "@/components/EmailTemplate";
 import { createClient } from "@/utils/supabase/server";
 import { Resend } from "resend";
 
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   const reminders = [];
   const result = [];
   if (!events || !members) {
-    return { error: "No data", status: 404 };
+    return Response.json({ error: "No data" }, { status: 404 });
   }
   const rightNow = new Date();
 
@@ -65,10 +65,10 @@ export async function GET(request: Request) {
     for (const member of members) {
       try {
         const { data, error } = await resend.emails.send({
-          from: "onboarding@resend.dev",
+          from: process.env.EMAIL_FROM ?? "onboarding@resend.dev",
           to: member.email, //change to member.email
           subject: `${event.title} is ${reminder} away`,
-          react: EmailTemplate({
+          react: ReminderEmailTemplate({
             firstName: member.name.split(" ")[0],
             event: event,
             reminder: reminder,

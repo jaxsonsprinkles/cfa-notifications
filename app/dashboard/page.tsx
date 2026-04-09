@@ -4,20 +4,14 @@ import { useEffect, useState } from "react";
 import { getEvents, getMembers } from "../actions";
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import EmailTemplate from "@/components/EmailTemplate";
-import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
   const [events, setEvents] = useState<any[]>([]);
   const [members, setMembers] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     async function fetchData() {
       const eventsData = await getEvents();
@@ -42,9 +36,7 @@ export default function Dashboard() {
       <div className="my-2 grid grid-cols-3 space-x-2">
         <Card>
           <CardHeader>
-            <CardTitle>
-              <CardTitle>Total Members</CardTitle>
-            </CardTitle>
+            <CardTitle>Total Members</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">{members.length}</p>
@@ -52,9 +44,7 @@ export default function Dashboard() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>
-              <CardTitle>Upcoming Events</CardTitle>
-            </CardTitle>
+            <CardTitle>Upcoming Events</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">{events.length}</p>
@@ -62,9 +52,7 @@ export default function Dashboard() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>
-              <CardTitle>Active Reminders</CardTitle>
-            </CardTitle>
+            <CardTitle>Active Reminders</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">{events.length * 4}</p>
