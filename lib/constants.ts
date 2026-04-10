@@ -1,5 +1,12 @@
 import { Resolver } from "react-hook-form";
 
+export const eventResolver: Resolver<any> = async (values) => {
+  const errors: Record<string, any> = {};
+  if (!values.title) errors.title = { type: "required", message: "Event name is required." };
+  if (!values.located_at) errors.located_at = { type: "required", message: "Location is required." };
+  return { values: Object.keys(errors).length === 0 ? values : {}, errors };
+};
+
 export const resolver: Resolver<any> = async (values) => {
   const errors: Record<string, any> = {};
 
