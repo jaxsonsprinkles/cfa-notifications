@@ -4,6 +4,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
 import { resolver } from "@/lib/constants";
 import { addEvent, getEvents, removeEvent } from "../actions";
 import { useEffect, useState } from "react";
@@ -28,12 +29,12 @@ export default function Events() {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: async (values) => {
+    resolver: (async (values) => {
       const errs: Record<string, any> = {};
       if (!values.title) errs.title = { type: "required", message: "Event name is required." };
       if (!values.located_at) errs.located_at = { type: "required", message: "Location is required." };
       return { values: Object.keys(errs).length === 0 ? values : {}, errors: errs };
-    },
+    }) as Resolver,
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
