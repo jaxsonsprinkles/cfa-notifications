@@ -92,10 +92,15 @@ export default function Events() {
   }, []);
 
   return (
-    <div>
+    <div className="space-y-4">
+      <Card className="shadow-sm">
+        <CardHeader className="pb-3 border-b">
+          <CardTitle className="text-base font-semibold">Add Event</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-2 my-2"
+        className="flex flex-col gap-2"
       >
         <Input {...register("title")} placeholder="Event Name" />
         <div className="flex gap-2 lg:gap-4 ">
@@ -137,36 +142,38 @@ export default function Events() {
           </AlertDescription>
         </Alert>
       </form>
-      <div>
+        </CardContent>
+      </Card>
+
+      <div className="space-y-3">
         {events.map((event, i) => {
           return (
-            <Card key={i} className="my-2">
-              <CardHeader>
-                <CardTitle>{event.title}</CardTitle>
-                <CardDescription>{event.description}</CardDescription>
-                <CardAction>
-                  {event.date.substring(0, 10)},{" "}
-                  {new Date(event.time).toLocaleString(undefined, {
-                    hour: "numeric",
-                    minute: "2-digit",
-                    second: "2-digit",
-                    hour12: true,
-                  })}
-                </CardAction>
+            <Card key={i} className="shadow-sm stat-card">
+              <CardHeader className="pb-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <CardTitle className="text-base">{event.title}</CardTitle>
+                    {event.description && (
+                      <CardDescription className="mt-0.5">{event.description}</CardDescription>
+                    )}
+                  </div>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap mt-0.5">
+                    {event.date.substring(0, 10)},{" "}
+                    {new Date(event.time).toLocaleString(undefined, {
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </span>
+                </div>
               </CardHeader>
-
-              <div>
-                <CardFooter className="flex items-center justify-between">
-                  <p>{event.located_at}</p>
-                  <Trash2
-                    onClick={() => {
-                      removeEvent(event.id);
-                    }}
-                    className="size-5 cursor-pointer"
-                    color="red"
-                  />
-                </CardFooter>
-              </div>
+              <CardFooter className="pt-0 flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">{event.located_at}</p>
+                <Trash2
+                  onClick={() => removeEvent(event.id)}
+                  className="size-4 cursor-pointer text-red-400 hover:text-red-600 transition-colors"
+                />
+              </CardFooter>
             </Card>
           );
         })}

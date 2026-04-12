@@ -2,96 +2,69 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { BellRing } from "lucide-react";
 
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
-  },
-  {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
-    description:
-      "For sighted users to preview content available behind a link.",
-  },
-  {
-    title: "Progress",
-    href: "/docs/primitives/progress",
-    description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-  },
-  {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
+const navLinks = [
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Members", href: "/members" },
+  { label: "Events", href: "/events" },
 ];
 
 export default function Navbar() {
-  return (
-    <NavigationMenu className="mx-auto p-3">
-      <NavigationMenuList className="flex-wrap">
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/dashboard">Dashboard</Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/members">Members</Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/events">Events</Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  );
-}
+  const pathname = usePathname();
 
-function ListItem({
-  title,
-  children,
-  href,
-  ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
   return (
-    <li {...props}>
-      <NavigationMenuLink asChild>
-        <Link href={href}>
-          <div className="text-sm leading-none font-medium">{title}</div>
-          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
-            {children}
-          </p>
+    <header
+      className="sticky top-0 z-50 w-full mb-6"
+      style={{
+        background: "oklch(1.0 0 0 / 0.85)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid oklch(0.93 0.008 75)",
+        boxShadow: "0 1px 12px 0 hsl(0 0 0 / 0.07)",
+      }}
+    >
+      <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
+        {/* Brand */}
+        <Link href="/dashboard" className="flex items-center gap-2 group">
+          <div
+            className="flex items-center justify-center w-8 h-8 rounded-lg"
+            style={{ background: "oklch(0.4984 0.1887 20.4719)" }}
+          >
+            <BellRing className="w-4 h-4 text-white" />
+          </div>
+          <span
+            className="font-semibold text-sm tracking-tight"
+            style={{ color: "oklch(0.22 0.04 265)" }}
+          >
+            CFA Notifications
+          </span>
         </Link>
-      </NavigationMenuLink>
-    </li>
+
+        {/* Nav links */}
+        <nav className="flex items-center gap-1">
+          {navLinks.map(({ label, href }) => {
+            const active = pathname === href || pathname.startsWith(href + "/");
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
+                style={{
+                  color: active
+                    ? "oklch(0.4984 0.1887 20.4719)"
+                    : "oklch(0.45 0.03 265)",
+                  background: active
+                    ? "oklch(0.4984 0.1887 20.4719 / 0.08)"
+                    : "transparent",
+                }}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+    </header>
   );
 }

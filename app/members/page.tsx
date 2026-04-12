@@ -82,68 +82,72 @@ export default function Members() {
 	}, []);
 
 	return (
-		<div>
-			<form
-				onSubmit={handleSubmit(onSubmit)}
-				className='flex flex-col gap-2 my-2'
+		<div className='space-y-4'>
+			<div
+				className='rounded-xl border bg-card shadow-sm p-5'
 			>
-				<Input {...register('name')} placeholder='Member name' />
-				<Input
-					{...register('email', {
-						required: 'Required',
-						pattern: {
-							value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-							message: 'Invalid email address',
-						},
-					})}
-					placeholder='Member email'
-				/>
-				<Input
-					{...register('phone', {
-						required: 'Required',
-						pattern: {
-							value: /^.{10}$/,
-							message: 'Invalid phone number',
-						},
-					})}
-					type='number'
-					placeholder='Member phone #'
-				/>
-				<Button disabled={loading}>Add Member</Button>
-				<Alert
-					className={` ${
-						Object.keys(errors).length != 0 ? 'flex flex-col' : 'hidden'
-					}`}
-					variant='destructive'
+				<h2 className='text-base font-semibold mb-3'>Add Member</h2>
+				<form
+					onSubmit={handleSubmit(onSubmit)}
+					className='flex flex-col gap-2'
 				>
-					<AlertDescription>
-						{Object.values(errors).map((e: any) => e.message).join(' · ')}
-					</AlertDescription>
-				</Alert>
-			</form>
-			{
+					<Input {...register('name')} placeholder='Member name' />
+					<Input
+						{...register('email', {
+							required: 'Required',
+							pattern: {
+								value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+								message: 'Invalid email address',
+							},
+						})}
+						placeholder='Member email'
+					/>
+					<Input
+						{...register('phone', {
+							required: 'Required',
+							pattern: {
+								value: /^.{10}$/,
+								message: 'Invalid phone number',
+							},
+						})}
+						type='number'
+						placeholder='Member phone #'
+					/>
+					<Button disabled={loading}>Add Member</Button>
+					<Alert
+						className={` ${
+							Object.keys(errors).length != 0 ? 'flex flex-col' : 'hidden'
+						}`}
+						variant='destructive'
+					>
+						<AlertDescription>
+							{Object.values(errors).map((e: any) => e.message).join(' · ')}
+						</AlertDescription>
+					</Alert>
+				</form>
+			</div>
+
+			<div className='rounded-xl border bg-card shadow-sm overflow-hidden'>
 				<Table>
 					<TableHeader>
-						<TableRow>
-							<TableHead>Name</TableHead>
-							<TableHead>Email</TableHead>
-							<TableHead>Phone</TableHead>
+						<TableRow className='bg-muted/40 hover:bg-muted/40'>
+							<TableHead className='font-semibold text-xs uppercase tracking-wider text-muted-foreground'>Name</TableHead>
+							<TableHead className='font-semibold text-xs uppercase tracking-wider text-muted-foreground'>Email</TableHead>
+							<TableHead className='font-semibold text-xs uppercase tracking-wider text-muted-foreground'>Phone</TableHead>
+							<TableHead />
 						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{members?.map((member) => {
 							return (
-								<TableRow key={member.id}>
-									<TableCell>{member.name}</TableCell>
-									<TableCell>{member.email}</TableCell>
-									<TableCell>{member.phone}</TableCell>
-									<TableCell>
+								<TableRow key={member.id} className='hover:bg-muted/20'>
+									<TableCell className='font-medium'>{member.name}</TableCell>
+									<TableCell className='text-muted-foreground'>{member.email}</TableCell>
+									<TableCell className='text-muted-foreground'>{member.phone}</TableCell>
+									<TableCell className='w-10'>
 										<Trash2
-											color='red'
-											className='cursor-pointer size-5'
-											onClick={() => {
-												removeMember(member.id);
-											}}
+											className='cursor-pointer size-4 text-red-400 hover:text-red-600 transition-colors'
+											onClick={() => removeMember(member.id)}
 										/>
 									</TableCell>
 								</TableRow>
@@ -151,7 +155,7 @@ export default function Members() {
 						})}
 					</TableBody>
 				</Table>
-			}
+			</div>
 		</div>
 	);
 }

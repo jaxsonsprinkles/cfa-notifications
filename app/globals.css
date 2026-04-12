@@ -69,8 +69,8 @@
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: oklch(1.0000 0 0);
+  --radius: 0.6rem;
+  --background: oklch(0.978 0.008 75);
   --foreground: oklch(0.2079 0.0399 265.7275);
   --card: oklch(1.0000 0 0);
   --card-foreground: oklch(0.2079 0.0399 265.7275);
@@ -113,14 +113,14 @@
   --shadow-offset-y: 4px;
   --letter-spacing: 0em;
   --spacing: 0.25rem;
-  --shadow-2xs: 0px 4px 10px 0px hsl(0 0 0 / 0.03);
-  --shadow-xs: 0px 4px 10px 0px hsl(0 0 0 / 0.03);
-  --shadow-sm: 0px 4px 10px 0px hsl(0 0 0 / 0.05), 0px 1px 2px -1px hsl(0 0 0 / 0.05);
-  --shadow: 0px 4px 10px 0px hsl(0 0 0 / 0.05), 0px 1px 2px -1px hsl(0 0 0 / 0.05);
-  --shadow-md: 0px 4px 10px 0px hsl(0 0 0 / 0.05), 0px 2px 4px -1px hsl(0 0 0 / 0.05);
-  --shadow-lg: 0px 4px 10px 0px hsl(0 0 0 / 0.05), 0px 4px 6px -1px hsl(0 0 0 / 0.05);
-  --shadow-xl: 0px 4px 10px 0px hsl(0 0 0 / 0.05), 0px 8px 10px -1px hsl(0 0 0 / 0.05);
-  --shadow-2xl: 0px 4px 10px 0px hsl(0 0 0 / 0.13);
+  --shadow-2xs: 0px 1px 3px 0px hsl(0 0 0 / 0.06);
+  --shadow-xs: 0px 1px 4px 0px hsl(0 0 0 / 0.08);
+  --shadow-sm: 0px 2px 8px 0px hsl(0 0 0 / 0.08), 0px 1px 2px -1px hsl(0 0 0 / 0.06);
+  --shadow: 0px 4px 12px 0px hsl(0 0 0 / 0.09), 0px 1px 3px -1px hsl(0 0 0 / 0.07);
+  --shadow-md: 0px 6px 16px 0px hsl(0 0 0 / 0.10), 0px 2px 4px -1px hsl(0 0 0 / 0.08);
+  --shadow-lg: 0px 8px 24px 0px hsl(0 0 0 / 0.11), 0px 4px 8px -2px hsl(0 0 0 / 0.08);
+  --shadow-xl: 0px 12px 32px 0px hsl(0 0 0 / 0.12), 0px 8px 12px -2px hsl(0 0 0 / 0.08);
+  --shadow-2xl: 0px 20px 48px 0px hsl(0 0 0 / 0.18);
   --tracking-normal: 0em;
 }
 
@@ -186,5 +186,31 @@
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.96 0.015 30 / 0.25), transparent);
+  }
+}
+
+@layer components {
+  .stat-card {
+    @apply relative overflow-hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+  .stat-number {
+    background: linear-gradient(135deg, oklch(0.4984 0.1887 20.4719), oklch(0.65 0.20 35));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .event-item {
+    border-left: 3px solid oklch(0.4984 0.1887 20.4719);
+    transition: background 0.15s ease;
+  }
+  .event-item:hover {
+    background: oklch(0.97 0.005 75);
   }
 }
